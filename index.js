@@ -7,6 +7,10 @@ const flash = require('express-flash')
 const app = express()
 const conn = require('./db/conn')
 
+const Tought = require('./models/Tought')
+const User = require('./models/User')
+
+//Models
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars')
 
@@ -53,6 +57,7 @@ app.use((req, res, next) => {
 
 conn
   .sync()
+  // .sync({force: true})
   .then(() => {
     app.listen(3000)
   })
