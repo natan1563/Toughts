@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 
 app.use('/toughts', toughtsRoutes)
 app.use('/', authRoutes)
-
+ 
 app.get('/', ToughtController.showToughts)
 conn
   .sync()
