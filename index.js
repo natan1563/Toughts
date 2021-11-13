@@ -7,15 +7,20 @@ const flash = require('express-flash')
 const app = express()
 const conn = require('./db/conn')
 
+//Models
 const Tought = require('./models/Tought')
 const User = require('./models/User')
 
-//Models
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars')
 
-// receber a resposta do body
+// Import Routes
+const toughtsRoutes = require('./routes/toughtsRoutes')
 
+// Controller
+const ToughtController = require('./controllers/ToughtController')
+
+// receber a resposta do body
 app.use(
   express.urlencoded({extended: true})
 )
@@ -55,9 +60,10 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use('/toughts', toughtsRoutes)
+app.get('/', ToughtController.showToughts)
 conn
   .sync()
-  // .sync({force: true})
   .then(() => {
     app.listen(3000)
   })
