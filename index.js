@@ -54,7 +54,7 @@ app.use(flash())
 app.use(express.static('public'))
 
 app.use((req, res, next) => {
-  if (req.session.userId) {
+  if (req.session.userid) {
     res.locals.session = req.session 
   }
 
