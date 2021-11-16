@@ -3,7 +3,12 @@ const User = require('../models/User')
 
 module.exports = class ToughtController {
   static async showToughts(req, res) {
-    res.render('toughts/home')
+    const toughtsData = await Tought.findAll({
+      include: User
+    })
+    const toughts = toughtsData.map((result) => result.get({plain: true}))
+
+    res.render('toughts/home', {toughts})
   }
 
   static async dashboard(req, res) {
@@ -22,11 +27,11 @@ module.exports = class ToughtController {
     }
 
     const toughts = user.Toughts.map((results) => results.dataValues)
-
-    console.log(toughts)
+    let emptyToughts = toughts.length === 0;
 
     res.render('toughts/dashboard', {
-      toughts
+      toughts,
+      emptyToughts
     })
   }
 
@@ -73,6 +78,33 @@ module.exports = class ToughtController {
       })
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  static async updateTought(req, res) {
+    const id = req.params.id 
+    const tought = await Tought.findOne({where: {id}, raw: true})
+
+    res.render('toughts/edit', { tought })
+  }
+
+  static async updateToughtSave(req, res) {
+    const id = req.body.id 
+
+    const tought = {
+      title: req.body.title
+    }
+
+    try {
+      await Tought.update(tought, {where: {id}})
+
+      req.flash('message', 'Pensamento atualizado com sucesso!')
+    
+      req.session.save(() => {
+        res.redirect('/toughts/dashboard')
+      })
+    } catch (error) {
+      console.log(`Deu ruim: ${error}`)
     }
   }
 }
