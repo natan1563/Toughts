@@ -29,7 +29,7 @@ module.exports = class AuthController {
 
     try {
       const createdUser = await User.create(user)
-      console.log(user)
+
       req.session.userid = user.id
 
       req.session.save(() => {
